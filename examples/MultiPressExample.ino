@@ -2,17 +2,21 @@
 
 #ifdef PARTICLE
   #define LEDPIN D7
+  #define BUTTON_A D2
+  #define BUTTON_B D3
 #elif ARDUINO >= 100
   #define LEDPIN 13
+  #define BUTTON_A 2
+  #define BUTTON_B 3
 #endif
 
 void A_ButtonActions(void);  // Callback function definitions are required...
 void B_ButtonActions(const int value);
 
 SimplePress pushButtonSwitches[]= {
-  //{2, 100, A_ButtonActions},  // pin, interval, callback-on-pressed
-  {2, 100, [](){digitalWrite(LEDPIN, !digitalRead(LEDPIN));}},  // same as above but done with Lambda
-  {3, 300, B_ButtonActions},
+  //{BUTTON_A, 100, A_ButtonActions},  // pin, interval, callback-on-pressed
+  {BUTTON_A, 100, [](){digitalWrite(LEDPIN, !digitalRead(LEDPIN));}},  // same as above but done with Lambda
+  {BUTTON_B, 300, B_ButtonActions},
 };
 
 void setup()
@@ -21,7 +25,7 @@ void setup()
   pinMode(LEDPIN, OUTPUT);
   Serial.println(SimplePress::getCount());
   SimplePress::beginAll();
-  SimplePress::setDebounceAll(25);
+  SimplePress::setDebounceAll(50);
 }
 
 void loop()
