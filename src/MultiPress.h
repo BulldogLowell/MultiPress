@@ -12,12 +12,15 @@
 
 class SimplePress{
   public:
-    SimplePress(int _pin, uint32_t _pressInterval, void(*_callBack)(int value));
+    SimplePress(int _pin, uint32_t _pressInterval, void(*_callBackWithArg)(const int value));
+    SimplePress(int _pin, uint32_t _pressInterval, void(*_callBack)(void));
     bool begin();
+    int setDebounce(uint8_t dbounce);
+    static void setDebounceAll(uint8_t dbounce);
     int8_t pressed();
     static void update(void);
     static bool beginAll();
-    static int getCount() {return instanceCount;}
+    static int getCount();
   private:
     byte pressCount;
     byte lastState;
@@ -25,7 +28,8 @@ class SimplePress{
     uint32_t lastMillis;
     uint8_t debouncePeriod;
     uint16_t pressInterval;
-    void(*callBack)(int value);
+    void(*callBackWithArg)(int value);
+    void(*callBack)();
     static uint8_t instanceCount;
     static SimplePress* instances[MAX_BUTTON_INSTANCES];
 };

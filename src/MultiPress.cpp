@@ -5,6 +5,16 @@ uint8_t SimplePress::instanceCount = 0;
 
 SimplePress::SimplePress(int _pin, uint32_t _pressInterval, void(*_callBack)(int value))
 {
+  callBackWithArg = _callBack;
+  pin = _pin;
+  debouncePeriod = DEFAULT_DEBOUNCE_MILLISECONDS;
+  pressInterval = _pressInterval;
+  instances[instanceCount] = this;
+  instanceCount++;
+}
+
+SimplePress::SimplePress(int _pin, uint32_t _pressInterval, void(*_callBack)(void))
+{
   callBack = _callBack;
   pin = _pin;
   debouncePeriod = DEFAULT_DEBOUNCE_MILLISECONDS;
@@ -37,9 +47,13 @@ void SimplePress::update(void)
     int8_t pressed = instances[button]->pressed();
     if(pressed)
     {
-      if(instances[button]->callBack)
+      if(instances[button]->callBackWithArg)
       {
-        instances[button]->callBack(pressed);
+        instances[button]->callBackWithArg(pressed);
+      }
+      else if(instances[button]->callBack)
+      {
+        instances[button]->callBack();
       }
     }
   }
@@ -57,7 +71,7 @@ int8_t SimplePress::pressed()
       lastMillis = millis();
       pressCount++;
     }
-    else 
+    else
     {
       if (millis() - lastMillis > pressInterval) // a long press
       {
@@ -78,4 +92,23 @@ int8_t SimplePress::pressed()
   }
   lastState = nowState;
   return 0;
+}
+
+int SimplePress::setDebounce(uint8_t dbounce)
+{
+  debouncePeriod = dbounce;
+  return debouncePeriod;
+}
+
+void SimplePress::setDebounceAll(uint8_t dbounce)
+{
+  for (size_t button = 0; button < instanceCount; button++)
+  {
+    instances[button]->setDebounce(dbounce);
+  }
+}
+
+int SimplePress::getCount()
+{
+  return instanceCount;
 }
