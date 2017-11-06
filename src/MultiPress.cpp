@@ -3,7 +3,7 @@
 SimplePress* SimplePress::instances[MAX_BUTTON_INSTANCES];
 uint8_t SimplePress::instanceCount = 0;
 
-SimplePress::SimplePress(int _pin, uint32_t _pressInterval, void(*_callBack)(int value))
+SimplePress::SimplePress(int _pin, uint32_t _pressInterval, void(*_callBack)(const int value))
 {
   callBackWithArg = _callBack;
   pin = _pin;
