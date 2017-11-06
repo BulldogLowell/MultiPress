@@ -1,18 +1,24 @@
 #include "/src/MultiPress.h"
 
+#ifdef PARTICLE
+  #define LEDPIN D7
+#elif ARDUINO >= 100
+  #define LEDPIN 13
+#endif
+
 void A_ButtonActions(void);  // Callback function definitions are required...
 void B_ButtonActions(const int value);
 
 SimplePress pushButtonSwitches[]= {
   //{2, 100, A_ButtonActions},  // pin, interval, callback-on-pressed
-  {2, 100, [](){digitalWrite(13, !digitalRead(13));}},  // same as above but done with Lambda
+  {2, 100, [](){digitalWrite(LEDPIN, !digitalRead(LEDPIN));}},  // same as above but done with Lambda
   {3, 300, B_ButtonActions},
 };
 
 void setup()
 {
   Serial.begin(115200);
-  pinMode(13, OUTPUT);
+  pinMode(LEDPIN, OUTPUT);
   Serial.println(SimplePress::getCount());
   SimplePress::beginAll();
   SimplePress::setDebounceAll(25);
@@ -25,7 +31,7 @@ void loop()
 
 void A_ButtonActions(void)  // simple example of registering "Pressed"
 {
-  digitalWrite(13, !digitalRead(13));
+  digitalWrite(LEDPIN, !digitalRead(LEDPIN));
 }
 
 void B_ButtonActions(const int value)  // example of registering Multi-Presses
